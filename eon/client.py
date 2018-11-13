@@ -46,7 +46,7 @@ class EON():
 
         :param int page_size: size of paged results
         :param int start_index: results offset
-        :return: 
+        :return: messages page
         '''
         response = self.request(
             'GET',
@@ -71,6 +71,7 @@ class EON():
 
     def request(self, method, path, payload=None):
         '''
+        Make REST API call
 
         :param str method: http verb
         :param str path: api path
