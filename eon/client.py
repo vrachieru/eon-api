@@ -1,6 +1,8 @@
+import os
 import json
 import requests
 
+from .model import *
 from .util import *
 
 class EON():
@@ -53,9 +55,9 @@ class EON():
             '/mobapi/v3/inbox/list?pageSize={page_size}&startIndex={start_index}'.format(**locals())
         )
 
-        return response.json()
+        return MessagePage(response.json())
 
-    def get_inbox_message(self, message_id):
+    def get_message(self, message_id):
         '''
         Get inbox message
 
@@ -67,7 +69,7 @@ class EON():
             '/mobapi/v3/inbox/message/{message_id}'.format(**locals())
         )
 
-        return response.json()
+        return Message(response.json())
 
     def request(self, method, path, payload=None):
         '''
@@ -124,9 +126,9 @@ class EON():
         )
 
         canonical_request_hash = sha256(canonical_request)
-        payload = date + '\n' + b64encode(canonical_request_hash)
+        payload = date + '\n' + base64_encode(canonical_request_hash)
 
-        nonce = hmac_sha256(self._SHARED_KEY, date).decode('utf-8')
-        signature = b64encode(hmac_sha256(nonce, payload))
+        nonce = utf8_decode(hmac_sha256(self._SHARED_KEY, date))
+        signature = base64_encode(hmac_sha256(nonce, payload))
 
         return 'SignedHeaders=content-type.host.x-date,Signature=' + signature

@@ -7,22 +7,20 @@ from eon import EON
 
 eon = EON('username', 'password')
 
-inbox = eon.get_inbox()
+message_page = eon.get_inbox()
 
-print ('Page size: %s' % inbox['pageSize'])
-print ('Start index: %s' % inbox['startIndex'])
+print ('Page size: %s' % message_page.page_size)
+print ('Start index: %s' % message_page.start_index)
 
-print ('Total messages: %s' % inbox['totalNumber'])
-print ('Unread messages: %s' % inbox['unreadMessages'])
+print ('Total messages: %s' % message_page.total_count)
+print ('Unread messages: %s' % message_page.unread_count)
 
-is_unread = lambda msg: not msg['read']
-strip_html = lambda msg: re.sub('<[^<]+?>', '', msg)
+is_unread = lambda message: not message.read
+unread_messages = filter(is_unread, message_page.messages)
 
-unread = filter(is_unread, inbox['notifications'])
-
-for notification in unread:
-    message = eon.get_inbox_message(notification['id'])
-    print('Id: %s' % message['id'])
-    print('Subject: %s' % message['subject'].encode('utf-8'))
-    print('Date: %s' % message['date'].encode('utf-8'))
-    print('Body: %s' % strip_html(message['body']).encode('utf-8'))
+for message in unread_messages:
+    message = eon.get_message(message.id)
+    print('Id: %s' % message.id)
+    print('Subject: %s' % message.subject)
+    print('Date: %s' % message.date)
+    print('Body: %s' % message.body)
