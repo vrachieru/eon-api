@@ -41,6 +41,22 @@ def parse_date_time(date_time_str):
     '''
     return datetime.datetime.strptime(date_time_str, DATE_TIME_FORMAT)
 
+def parse_date_period(date_period_str):
+    '''
+    Parse date period string
+
+    :param str date_period_str: date period string to parse
+    :return: list of parsed date objects
+    '''
+    if date_period_str == None:
+        return None
+
+    dates = date_period_str.split('-')
+    dates = list(map(lambda d: d.strip(), dates))
+    dates = list(map(parse_date, dates))
+
+    return dates
+
 def sha256(message):
     '''
     Compute a hash of plain text message

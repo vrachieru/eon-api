@@ -71,6 +71,65 @@ class EON():
 
         return Message(response.json())
 
+    def get_invoices(self, account_contract, filter=InvoiceFilter.ALL.value, page_size=20, start_index=0):
+        '''
+        Get invoices
+
+        :param int account_contract: size of paged results
+        :param str type:
+        :param int page_size: size of paged results
+        :param int start_index: results offset
+        :return: invoice page
+        '''
+        response = self.request(
+            'GET',
+            '/mobapi/v3/invoice/list/{account_contract}/{filter}?pageSize={page_size}&startIndex={start_index}'.format(**locals())
+        )
+
+        return InvoicePage(response.json())
+
+    def get_invoice_details(self, invoice_id):
+        '''
+        Get invoice details
+
+        :param int invoice_id: invoice id
+        :return: invoice details
+        '''
+        response = self.request(
+            'GET',
+            '/mobapi/v3/invoice/details/{invoice_id}'.format(**locals())
+        )
+
+        return list(map(InvoiceDetails, response.json().get('invoiceDetails')))
+
+    def get_invoice_meter_details(self, invoice_id):
+        '''
+        Get invoice meter details
+
+        :param int invoice_id: invoice id
+        :return: invoice meter details
+        '''
+        response = self.request(
+            'GET',
+            '/mobapi/v3/invoice/meter-details/{invoice_id}'.format(**locals())
+        )
+
+        return list(map(InvoiceMeterDetails, response.json().get('meterDetails')))
+
+    def download_invoice(self, invoice_id, path='.'):
+        '''
+        Download invoice pdf
+
+        :param int invoice_id: invoice id
+        '''
+        response = self.request(
+            'GET',
+            '/mobapi/v3/invoice/pdf/{invoice_id}'.format(**locals())
+        )
+
+        with open(os.path.join(*[path, invoice_id + '.pdf']), 'wb') as f:
+            f.write(response.content)
+
     def request(self, method, path, payload=None):
         '''
         Make REST API call

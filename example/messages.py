@@ -1,8 +1,6 @@
 import sys
 sys.path.append('../')
 
-import re
-
 from eon import EON
 
 eon = EON('username', 'password')
