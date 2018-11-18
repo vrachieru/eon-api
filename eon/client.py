@@ -76,7 +76,7 @@ class EON():
         Get invoices
 
         :param int account_contract: size of paged results
-        :param str type:
+        :param str filter: invoice filter
         :param int page_size: size of paged results
         :param int start_index: results offset
         :return: invoice page
